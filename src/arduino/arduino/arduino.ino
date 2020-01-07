@@ -13,7 +13,6 @@ void setup()
     Serial.begin(115200); 
     while (!Serial);
     Serial.println("Begin");
-    SigFox.begin();
 
     // print ID AND PAC
     /*
@@ -24,7 +23,13 @@ void setup()
     */
     
     dht.begin();
+    SigFox.begin();
 }
+
+typedef struct __attribute__ ((packed)) sigfox_message {
+    int8_t temp;
+    int8_t hum;
+} SigfoxMessage;
 
 void loop() 
 {
@@ -34,28 +39,25 @@ void loop()
     int hum = 0;
 
     //get the data
-    if(!dht.readTempAndHumidity(temp_hum_val)){
+    if (!dht.readTempAndHumidity(temp_hum_val)) {
+        SigfoxMessage msg;
         sigTemp = SigFox.internalTemperature();
         temp = static_cast<int>(temp_hum_val[1]);
         hum = static_cast<int>(temp_hum_val[0]);
-        Serial.print("Humidity: "); 
-        Serial.print(hum);
-        Serial.print(" %\t");
-        Serial.print("Temperature: "); 
-        Serial.print(temp);
-        Serial.print(" *C");
-        Serial.print(" SigTemperature: "); 
-        Serial.print(sigTemp);
-        Serial.println(" *C");
-        int8_t t = (int8_t)sigTemp;
+
+        msg.temp = temp;
+        msg.hum = hum;
         SigFox.beginPacket();
-        SigFox.write(t);
+        Serial.println(1);
+        SigFox.write((uint8_t*)&msg,sizeof(msg));
+        Serial.println(2);
         SigFox.endPacket(false);
+        Serial.println(3);
         SigFox.end();
-    }
-    else{
+        Serial.println(4);
+    } else {
        Serial.println("Failed to get temprature and humidity value.");
     }
 
-   delay(1000*60*11);
+   delay(1000);
 }
