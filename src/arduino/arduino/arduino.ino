@@ -10,9 +10,9 @@ DHT dht(DHTPIN, DHTTYPE);
 
 void setup() 
 {
-    Serial.begin(115200); 
-    while (!Serial);
-    Serial.println("Begin");
+    //Serial.begin(115200); 
+    //while (!Serial);
+    //Serial.println("Begin");
 
     // print ID AND PAC
     /*
@@ -24,6 +24,7 @@ void setup()
     
     dht.begin();
     SigFox.begin();
+    SigFox.end();
 }
 
 typedef struct __attribute__ ((packed)) sigfox_message {
@@ -47,17 +48,19 @@ void loop()
 
         msg.temp = temp;
         msg.hum = hum;
+        SigFox.begin();
         SigFox.beginPacket();
-        Serial.println(1);
         SigFox.write((uint8_t*)&msg,sizeof(msg));
-        Serial.println(2);
-        SigFox.endPacket(false);
-        Serial.println(3);
+        bool e = SigFox.endPacket(true);
+        /*if (e) {
+          Serial.println("success");
+        } else {
+          Serial.println("fail");
+        }*/
         SigFox.end();
-        Serial.println(4);
     } else {
-       Serial.println("Failed to get temprature and humidity value.");
+       //Serial.println("Failed to get temprature and humidity value.");
     }
 
-   delay(1000);
+   delay(1000*60*15);
 }
