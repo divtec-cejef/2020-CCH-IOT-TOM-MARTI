@@ -4,6 +4,8 @@ $id = $_POST['id'];
 $time = $_POST['time'];
 $temphum = $_POST['data'];
 
+if (isset($id) && isset($time) && isset($temphum)) {
+
 $temp = substr($temphum, 0, 2);
 $hum = substr($temphum, -2, 2);
 
@@ -23,3 +25,5 @@ $decoded_json[] = $data;
 
 $json = json_encode($decoded_json);
 file_put_contents("data.json", $json);
+
+}
