@@ -7,6 +7,12 @@ namespace App\Application\Object;
 use PDO;
 use PDOException;
 
+/**
+ * Class Database
+ * @package App\Application\Object
+ * Cette class est nécessaire à l'instantiation de connection de base de données
+ * Elle contient notemment les informations de connection
+ */
 class Database
 {
     private $dbName = "db";
@@ -14,6 +20,10 @@ class Database
     private $user = "user";
     private $password = "password";
 
+    /**
+     * Cette fonction créé une instance de base de donnée
+     * @return PDO|null contient l'objet pdo nécessaire au requètes
+     */
     public function getConnection () {
         $connection = null;
 
