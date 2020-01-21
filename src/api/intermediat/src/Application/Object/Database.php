@@ -18,7 +18,7 @@ class Database
     private $dbName = "db";
     private $host = "localhost";
     private $user = "user";
-    private $password = "password";
+    private $password = "123";
 
     /**
      * Cette fonction créé une instance de base de donnée
