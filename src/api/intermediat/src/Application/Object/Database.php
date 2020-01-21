@@ -9,7 +9,10 @@ use PDOException;
 
 class Database
 {
-
+    private $dbName = "db";
+    private $host = "localhost";
+    private $user = "user";
+    private $password = "password";
 
     public function getConnection () {
         $connection = null;

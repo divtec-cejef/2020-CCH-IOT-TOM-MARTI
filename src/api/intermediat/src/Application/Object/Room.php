@@ -4,13 +4,13 @@
 namespace App\Application\Object;
 
 
-class Device
+class Room
 {
     public function getAll ($request, $response, $args) {
         $db = new Database();
         $connection  = $db->getConnection();
 
-        $query = "SELECT device.id, device.name as dname, room.name as rname FROM device INNER JOIN room ON device.id_room = room.id";
+        $query = "SELECT id, name FROM room";
 
         $req = $connection->prepare($query);
 
@@ -21,8 +21,7 @@ class Device
         while ($row = $req->fetch(\PDO::FETCH_ASSOC)) {
             $data[] = array(
                 "id" => $row['id'],
-                "name" => $row['dname'],
-                "room" => $row['rname']
+                "name" => $row['name']
             );
         }
         $payload = json_encode($data);
@@ -35,7 +34,7 @@ class Device
         $db = new Database();
         $connection  = $db->getConnection();
 
-        $query = "SELECT device.id, device.name as dname, room.name as rname FROM device INNER JOIN room ON device.id_room = room.id WHERE device.id = :id";
+        $query = "SELECT id, name FROM room WHERE id = :id";
 
         $req = $connection->prepare($query);
 
@@ -48,8 +47,7 @@ class Device
 
             $data = [
                 "id" => $result[0]['id'],
-                "name" => $result[0]['dname'],
-                "room" => $result[0]['rname']
+                "name" => $result[0]['name']
             ];
 
         } else {
@@ -72,7 +70,7 @@ class Device
         $db = new Database();
         $connection  = $db->getConnection();
 
-        $query = "SELECT measure.id, time, temperature, humidity FROM measure INNER JOIN device ON measure.id_device = device.id WHERE device.id = :id";
+        $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id WHERE id_room = :id";
 
         $req = $connection->prepare($query);
 
@@ -86,7 +84,8 @@ class Device
                 "id" => $row['id'],
                 "time" => $row['time'],
                 "temperature" => $row['temperature'],
-                "humidity" => $row['humidity']
+                "humidity" => $row['humidity'],
+                "room" => $row['name']
             );
         }
 
@@ -103,7 +102,7 @@ class Device
             $db = new Database();
             $connection = $db->getConnection();
 
-            $query = "SELECT measure.id, time, temperature, humidity FROM measure INNER JOIN device ON measure.id_device = device.id WHERE device.id = :id AND time >= :firstTime AND time <= :secondTime";
+            $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id WHERE id_room = :id AND time >= :firstTime AND time <= :secondTime";
 
             $req = $connection->prepare($query);
 
@@ -122,7 +121,8 @@ class Device
                     "id" => $row['id'],
                     "time" => $row['time'],
                     "temperature" => $row['temperature'],
-                    "humidity" => $row['humidity']
+                    "humidity" => $row['humidity'],
+                    "room" => $row['name']
                 );
             }
 
@@ -152,7 +152,7 @@ class Device
             $db = new Database();
             $connection = $db->getConnection();
 
-            $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id WHERE device.id = :id AND time >= :firstTime AND time <= :secondTime";
+            $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id WHERE room.id = :id AND time >= :firstTime AND time <= :secondTime";
 
             $req = $connection->prepare($query);
 
