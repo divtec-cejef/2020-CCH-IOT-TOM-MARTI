@@ -15,10 +15,19 @@ use PDOException;
  */
 class Database
 {
-    private $dbName = "db";
-    private $host = "localhost";
-    private $user = "user";
-    private $password = "123";
+    private $dbName = "";
+    private $host = "";
+    private $user = "";
+    private $password = "";
+
+    public function __construct()
+    {
+        $dbinc = new DatabaseInc();
+        $this->dbName = $dbinc->getDbName();
+        $this->host = $dbinc->getHost();
+        $this->user = $dbinc->getUser();
+        $this->password = $dbinc->getPassword();
+    }
 
     /**
      * Cette fonction créé une instance de base de donnée

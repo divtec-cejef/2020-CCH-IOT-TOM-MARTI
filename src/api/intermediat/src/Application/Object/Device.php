@@ -3,7 +3,6 @@
 
 namespace App\Application\Object;
 
-
 class Device
 {
     public function getAll ($request, $response, $args) {
