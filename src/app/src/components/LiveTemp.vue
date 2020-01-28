@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="change">
     <p><span>{{ temp }}</span>°</p>
     <p>{{ day }}</p>
   </div>
@@ -8,7 +8,12 @@
 <script>
 export default {
   name: 'LiveTemp',
-  props: ['temp', 'day']
+  props: ['temp', 'day'],
+  methods: {
+    change() {
+      this.$parent.isGraph = true;
+    }
+  }
 }
 </script>
 

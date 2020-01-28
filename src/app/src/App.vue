@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <!--<live-temp :temp="selectedTemp.temperature !== undefined ? selectedTemp.temperature : '--'" :day="day"></live-temp>-->
-    <graph-temp :temps="temp" :hum="hum" :time="time" ref="graphO"></graph-temp>
+    <live-temp  v-show="!isGraph" :temp="selectedTemp.temperature !== undefined ? selectedTemp.temperature : '--'" :day="day"></live-temp>
+    <graph-temp v-show="isGraph" :temps="temp" :hum="hum" :time="time" ref="graphO"></graph-temp>
     <div>
       <room-menu :rooms="rooms"></room-menu>
-      <live-humidity :hum="selectedTemp.humidity !== undefined ? selectedTemp.humidity : '--'"></live-humidity>
+      <live-humidity v-show="!isGraph" :hum="selectedTemp.humidity !== undefined ? selectedTemp.humidity : '--'"></live-humidity>
+      <back v-show="isGraph"></back>
     </div>
   </div>
 </template>
@@ -14,6 +15,8 @@
 import LiveHumidity from "./components/LiveHumidity";
 import RoomMenu from "./components/RoomMenu";
 import GraphTemp from "./components/GraphTemp";
+import Back from "./components/Back";
+import LiveTemp from "./components/LiveTemp";
 import axios from "axios"
 
 export default {
@@ -22,7 +25,9 @@ export default {
     // LiveTemp,
     LiveHumidity,
     RoomMenu,
-    GraphTemp
+    GraphTemp,
+    Back,
+    LiveTemp
   },
   data () {
     return {
@@ -32,6 +37,7 @@ export default {
       temp: [],
       hum: [],
       time: [],
+      isGraph: false,
       day: undefined
     }
   },
@@ -66,8 +72,8 @@ export default {
         this.temps.forEach(temp => {
           this.temp.push(temp.temperature);
           this.hum.push(temp.humidity);
-          //let tDate = new Date(parseInt(temp.time));
-          this.time.push(parseInt(temp.time));
+          let tDate = new Date(parseInt(temp.time)*1000);
+          this.time.push(tDate.getFullYear()+'-'+(tDate.getMonth() + 1) +'-'+tDate.getDate());
         });
         this.$refs.graphO.setChart(this.temp, this.hum, this.time);
       })
