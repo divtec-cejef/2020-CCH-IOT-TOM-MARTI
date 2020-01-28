@@ -51,7 +51,7 @@ void loop()
         SigFox.begin();
         SigFox.beginPacket();
         SigFox.write((uint8_t*)&msg,sizeof(msg));
-        bool e = SigFox.endPacket(true);
+        bool e = SigFox.endPacket();
         /*if (e) {
           Serial.println("success");
         } else {

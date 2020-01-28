@@ -14,8 +14,8 @@ class Callback
         $room = $_POST['room'];
         $temphum = $_POST['data'];
 
-        $temp = substr($temphum, 0, 2);
-        $hum = substr($temphum, -2, 2);
+        $temp = hexdec(substr($temphum, 0, 2));
+        $hum = hexdec(substr($temphum, -2, 2));
 
         if (isset($id) && isset($time) && isset($temp) && isset($hum) && isset($room)) {
             $this->insert($id, $time, $temp, $hum, $room);
