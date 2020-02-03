@@ -3,7 +3,7 @@
     <live-temp  v-show="!isGraph" :temp="selectedTemp.temperature !== undefined ? selectedTemp.temperature : '--'" :day="day"></live-temp>
     <graph-temp v-show="isGraph" :temps="temp" :hum="hum" :time="time" ref="graphO"></graph-temp>
     <div>
-      <room-menu :rooms="rooms"></room-menu>
+      <room-menu ref="roomMenu" :rooms="rooms"></room-menu>
       <live-humidity v-show="!isGraph" :hum="selectedTemp.humidity !== undefined ? selectedTemp.humidity : '--'"></live-humidity>
       <back v-show="isGraph"></back>
     </div>
@@ -45,6 +45,8 @@ export default {
     getRooms () {
       axios.get('https://temp.martitom.ch/rooms').then(response => {
         this.rooms = response.data;
+        this.getTemps(this.rooms[0].id);
+        this.$refs.roomMenu.selected = this.rooms[0].id;
       })
     },
     getTemps (id) {
@@ -72,8 +74,7 @@ export default {
         this.temps.forEach(temp => {
           this.temp.push(temp.temperature);
           this.hum.push(temp.humidity);
-          let tDate = new Date(parseInt(temp.time)*1000);
-          this.time.push(tDate.getFullYear()+'-'+(tDate.getMonth() + 1) +'-'+tDate.getDate());
+          this.time.push(temp.date);
         });
         this.$refs.graphO.setChart(this.temp, this.hum, this.time);
       })
@@ -81,7 +82,6 @@ export default {
   },
   mounted () {
     this.getRooms();
-    this.getTemps(1);
   }
 }
 </script>

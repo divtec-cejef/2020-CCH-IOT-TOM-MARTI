@@ -14,7 +14,7 @@ export default {
   props: ['rooms'],
   data () {
     return {
-      selected: 1
+      selected: 0
     }
   },
   methods: {

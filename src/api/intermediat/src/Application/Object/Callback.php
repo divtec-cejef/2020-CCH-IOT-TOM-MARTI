@@ -11,14 +11,13 @@ class Callback
     public function process ($request, $response, $args) {
         $id = $_POST['id'];
         $time = $_POST['time'];
-        $room = $_POST['room'];
         $temphum = $_POST['data'];
 
         $temp = hexdec(substr($temphum, 0, 2));
         $hum = hexdec(substr($temphum, -2, 2));
 
-        if (isset($id) && isset($time) && isset($temp) && isset($hum) && isset($room)) {
-            $this->insert($id, $time, $temp, $hum, $room);
+        if (isset($id) && isset($time) && isset($temp) && isset($hum)) {
+            $this->insert($id, $time, $temp, $hum);
         }
         $data = array(
             "device" => $id,
@@ -31,16 +30,15 @@ class Callback
         return $response->withHeader('Content-Type', 'application/json');
     }
 
-    private function insert ($id, $time, $temp, $hum, $room) {
+    private function insert ($id, $time, $temp, $hum) {
         $db = new Database();
         $connection = $db->getConnection();
 
-        $query = "INSERT IGNORE INTO device VALUES (null, :device, :room)";
+        $query = "INSERT IGNORE INTO device VALUES (null, :device, null)";
 
         $req = $connection->prepare($query);
 
         $req->bindParam(":device", $id);
-        $req->bindParam(":room", $room);
 
         $req->execute();
 

@@ -1,6 +1,6 @@
 <template>
   <div @click="change">
-    <p><span>{{ temp }}</span>°</p>
+    <p><span>{{ Math.round(temp) }}</span>°</p>
     <p>{{ day }}</p>
   </div>
 </template>
