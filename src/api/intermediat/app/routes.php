@@ -6,23 +6,30 @@ use App\Application\Object\Device;
 use App\Application\Object\Measure;
 use App\Application\Object\Room;
 use Slim\App;
+use Slim\Routing\RouteCollectorProxy;
 
 return function (App $app) {
     $app->post('/callback', Callback::class . ':process');
 
-    $app->get('/devices', Device::class . ':getAll');
-    $app->get('/devices/{id}', Device::class . ':get');
-    $app->get('/devices/{id}/measures', Device::class . ':getMeasures');
-    $app->get('/devices/{id}/measures/{date}', Device::class . ':getMeasuresAtDate');
-    $app->get('/devices/{id}/measures/{from}/{to}', Device::class . ':getMeasuresFromTo');
+    $app->group('/devices', function (RouteCollectorProxy $group) {
+        $group->get('', Device::class . ':getAll');
+        $group->get('/{id}', Device::class . ':get');
+        $group->get('/{id}/measures', Device::class . ':getMeasures');
+        $group->get('/{id}/measures/{date}', Device::class . ':getMeasuresAtDate');
+        $group->get('/{id}/measures/{from}/{to}', Device::class . ':getMeasuresFromTo');
+    });
 
-    $app->get('/rooms', Room::class . ':getAll');
-    $app->get('/rooms/{id}', Room::class . ':get');
-    $app->get('/rooms/{id}/measures', Room::class . ':getMeasures');
-    $app->get('/rooms/{id}/measures/{date}', Room::class . ':getMeasuresAtDate');
-    $app->get('/rooms/{id}/measures/{from}/{to}', Room::class . ':getMeasuresFromTo');
+    $app->group('/rooms', function (RouteCollectorProxy $group) {
+        $group->get('', Room::class . ':getAll');
+        $group->get('/{id}', Room::class . ':get');
+        $group->get('/{id}/measures', Room::class . ':getMeasures');
+        $group->get('/{id}/measures/{date}', Room::class . ':getMeasuresAtDate');
+        $group->get('/{id}/measures/{from}/{to}', Room::class . ':getMeasuresFromTo');
+    });
 
-    $app->get('/measures', Measure::class . ':getAll');
-    $app->get('/measures/{date}', Measure::class . ':getDate');
-    $app->get('/measures/{from}/{to}', Measure::class . ':getFromTo');
+    $app->group('/measures', function (RouteCollectorProxy $group) {
+        $group->get('', Measure::class . ':getAll');
+        $group->get('/{date}', Measure::class . ':getDate');
+        $group->get('/{from}/{to}', Measure::class . ':getFromTo');
+    });
 };

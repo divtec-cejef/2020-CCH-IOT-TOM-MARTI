@@ -84,7 +84,7 @@ class Room
         while ($row = $req->fetch(\PDO::FETCH_ASSOC)) {
             $data[] = array(
                 "id" => $row['id'],
-                "time" => $row['time'],
+                "time" => date('Y-m-d H:i:s', $row['time']),
                 "temperature" => $row['temperature'],
                 "humidity" => $row['humidity'],
                 "room" => $row['name']
@@ -121,7 +121,7 @@ class Room
             while ($row = $req->fetch(\PDO::FETCH_ASSOC)) {
                 $data[] = array(
                     "id" => $row['id'],
-                    "time" => $row['time'],
+                    "time" => date('Y-m-d H:i:s', $row['time']),
                     "temperature" => $row['temperature'],
                     "humidity" => $row['humidity'],
                     "room" => $row['name']
@@ -192,6 +192,7 @@ class Room
                             "temperature" => $ttemp / $index,
                             "humidity" => $thum / $index,
                             "date" => date('Y-m-d', $previousTime),
+                            "time" => date('Y-m-d H:i:s', $previousTime),
                             "room" => $previousRoom
                         );
                     }
@@ -208,6 +209,7 @@ class Room
                     "temperature" => $ttemp / $index,
                     "humidity" => $thum / $index,
                     "date" => date('Y-m-d', $previousTime),
+                    "time" => date('Y-m-d H:i:s', $previousTime),
                     "room" => $previousRoom
                 );
             }

@@ -4,6 +4,8 @@
 namespace App\Application\Object;
 
 
+use DateTime;
+
 class Measure
 {
     public function getAll ($request, $response, $args) {
@@ -21,7 +23,7 @@ class Measure
         while ($row = $req->fetch(\PDO::FETCH_ASSOC)) {
             $data[] = array(
                 "id" => $row['id'],
-                "time" => $row['time'],
+                "time" => date('Y-m-d H:i:s', $row['time']),
                 "temperature" => $row['temperature'],
                 "humidity" => $row['humidity'],
                 "room" => $row['name']
@@ -55,13 +57,47 @@ class Measure
             $req->execute();
             $data = [];
 
+            $ttemp = 0;
+            $thum = 0;
+            $index = 0;
+            $previousTime = null;
+            $previousRoom = null;
+            //$date1 = new DateTime($firstdate);
+            $date2 = new DateTime($firstdate . " 23:59:59");
+            $timestamp = strtotime($date2->format('Y-m-d H:i:s'));
+
             while ($row = $req->fetch(\PDO::FETCH_ASSOC)) {
+                if (intval($row['time']) < $timestamp) {
+                    $ttemp += $row['temperature'];
+                    $thum += $row['humidity'];
+                    $previousTime = $row['time'];
+                    $previousRoom = $row['name'];
+                    $index++;
+                } else {
+                    if ($index > 0) {
+                        $data[] = array(
+                            "temperature" => $ttemp / $index,
+                            "humidity" => $thum / $index,
+                            "date" => date('Y-m-d', $previousTime),
+                            "time" => date('Y-m-d H:i:s', $previousTime),
+                            "room" => $previousRoom
+                        );
+                    }
+                    $date2->modify('+1 day');
+                    $timestamp = strtotime($date2->format('Y-m-d H:i:s'));
+                    $ttemp = $row['temperature'];
+                    $thum = $row['humidity'];
+                    $previousTime = $row['time'];
+                    $index = 1;
+                }
+            }
+            if ($req->rowCount() > 0) {
                 $data[] = array(
-                    "id" => $row['id'],
-                    "time" => $row['time'],
-                    "temperature" => $row['temperature'],
-                    "humidity" => $row['humidity'],
-                    "room" => $row['name']
+                    "temperature" => $ttemp / $index,
+                    "humidity" => $thum / $index,
+                    "date" => date('Y-m-d', $previousTime),
+                    "time" => date('Y-m-d H:i:s', $previousTime),
+                    "room" => $previousRoom
                 );
             }
 
@@ -105,7 +141,7 @@ class Measure
             while ($row = $req->fetch(\PDO::FETCH_ASSOC)) {
                 $data[] = array(
                     "id" => $row['id'],
-                    "time" => $row['time'],
+                    "time" => date('Y-m-d H:i:s', $row['time']),
                     "temperature" => $row['temperature'],
                     "humidity" => $row['humidity'],
                     "room" => $row['name']
