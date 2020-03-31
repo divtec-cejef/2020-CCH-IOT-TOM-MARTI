@@ -12,7 +12,7 @@ class Measure
         $db = new Database();
         $connection  = $db->getConnection();
 
-        $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id";
+        $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id ORDER BY  time";
 
         $req = $connection->prepare($query);
 
@@ -44,7 +44,7 @@ class Measure
             $db = new Database();
             $connection = $db->getConnection();
 
-            $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id WHERE time >= :firstTime AND time <= :secondTime";
+            $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id WHERE time >= :firstTime AND time <= :secondTime ORDER BY  time";
 
             $req = $connection->prepare($query);
 
@@ -55,51 +55,7 @@ class Measure
             $req->bindParam(':secondTime', $secondDate);
 
             $req->execute();
-            $data = [];
-
-            $ttemp = 0;
-            $thum = 0;
-            $index = 0;
-            $previousTime = null;
-            $previousRoom = null;
-            //$date1 = new DateTime($firstdate);
-            $date2 = new DateTime($firstdate . " 23:59:59");
-            $timestamp = strtotime($date2->format('Y-m-d H:i:s'));
-
-            while ($row = $req->fetch(\PDO::FETCH_ASSOC)) {
-                if (intval($row['time']) < $timestamp) {
-                    $ttemp += $row['temperature'];
-                    $thum += $row['humidity'];
-                    $previousTime = $row['time'];
-                    $previousRoom = $row['name'];
-                    $index++;
-                } else {
-                    if ($index > 0) {
-                        $data[] = array(
-                            "temperature" => $ttemp / $index,
-                            "humidity" => $thum / $index,
-                            "date" => date('Y-m-d', $previousTime),
-                            "time" => date('Y-m-d H:i:s', $previousTime),
-                            "room" => $previousRoom
-                        );
-                    }
-                    $date2->modify('+1 day');
-                    $timestamp = strtotime($date2->format('Y-m-d H:i:s'));
-                    $ttemp = $row['temperature'];
-                    $thum = $row['humidity'];
-                    $previousTime = $row['time'];
-                    $index = 1;
-                }
-            }
-            if ($req->rowCount() > 0) {
-                $data[] = array(
-                    "temperature" => $ttemp / $index,
-                    "humidity" => $thum / $index,
-                    "date" => date('Y-m-d', $previousTime),
-                    "time" => date('Y-m-d H:i:s', $previousTime),
-                    "room" => $previousRoom
-                );
-            }
+            $data = UsefulFunction::getOnePerDay($req, $firstdate);
 
             $payload = json_encode($data);
 
@@ -125,7 +81,7 @@ class Measure
             $db = new Database();
             $connection = $db->getConnection();
 
-            $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id WHERE time >= :firstTime AND time <= :secondTime";
+            $query = "SELECT measure.id, time, temperature, humidity, room.name FROM measure INNER JOIN device ON measure.id_device = device.id INNER JOIN room ON device.id_room = room.id WHERE time >= :firstTime AND time <= :secondTime ORDER BY  time";
 
             $req = $connection->prepare($query);
 
