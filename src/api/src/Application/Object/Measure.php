@@ -86,12 +86,25 @@ class Measure
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
      }
 
-    /**
-     * @param Request $request
-     * @param Response $response
-     * @param array $args contient from et to
-     */
-    public function getFromTo (Request $request, Response $response, array $args) {}
+    public function getFromTo (Request $request, Response $response, array $args) {
+        // valider les dates Y-m-d
+        $from = explode("-", $args["from"]);
+        $fromIsValid = checkdate($from[1], $from[2], $from[0]);
+        $to = explode("-", $args["to"]);
+        $toIsValid = checkdate($to[1], $to[2], $to[0]);
+        if ($fromIsValid && $toIsValid) {
+            $from = $args["from"];
+            $to = $args["to"];
+
+            $fromMorning = $from . " 00:00:00";
+            $fromEvening = $from . " 23:59:59";
+            $toMorning = $to . " 00:00:00";
+            $toEvening = $to . " 23:59:59";
+
+            $response->getBody()->write(json_encode(["it's working"]));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        }
+    }
 
     /**
      * @param Request $request

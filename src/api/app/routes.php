@@ -7,6 +7,8 @@ use App\Application\Object\Callback;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 use Slim\Routing\RouteCollectorProxy;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 return function (App $app) {
     $app->group('/api', function (RouteCollectorProxy $group) {
@@ -16,7 +18,7 @@ return function (App $app) {
             $mes->get('', \App\Application\Object\Measure::class . ':get');
             $mes->get('/{from}/{to}', \App\Application\Object\Measure::class . ':getFromTo');
             $mes->put('/{id}', \App\Application\Object\Measure::class . ':update');
-            $mes->delete('/{id}', \App\Application\Object\Measure::class . ':delete');
+            $mes->delete('/{id}', \App\Application\Object\Measure::class . ":delete");
         });
     });
 };
