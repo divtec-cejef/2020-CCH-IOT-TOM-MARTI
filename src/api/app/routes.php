@@ -17,8 +17,8 @@ return function (App $app) {
         $group->group('/measures', function (RouteCollectorProxy $mes) {
             $mes->get('', \App\Application\Object\Measure::class . ':get');
             $mes->get('/{from}/{to}', \App\Application\Object\Measure::class . ':getFromTo');
-            $mes->put('/{id}', \App\Application\Object\Measure::class . ':update');
-            $mes->delete('/{id}', \App\Application\Object\Measure::class . ":delete");
+            $mes->put('/{id:[0-9]+}', \App\Application\Object\Measure::class . ':update');
+            $mes->delete('/{id:[0-9]+}', \App\Application\Object\Measure::class . ":delete");
         });
     });
 };
