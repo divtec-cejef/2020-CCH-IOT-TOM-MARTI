@@ -41,7 +41,6 @@
             this.minHum.push(item.humidity.min);
             this.hum.push(item.humidity.last);
           });
-          console.log("done axios")
           this.setChart();
         })
       },
@@ -90,7 +89,6 @@
           }
           }
         )
-        console.log("done chart")
       }
     },
     mounted() {

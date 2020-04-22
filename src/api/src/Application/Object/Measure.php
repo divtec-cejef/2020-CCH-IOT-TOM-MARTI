@@ -192,7 +192,8 @@ class Measure
 
     public function update (Request $request, Response $response, array $args) {
         $id = $args['id'];
-        parse_str(file_get_contents("php://input"),$_PUT);
+        parse_str(file_get_contents("php://input"), $_PUT);
+        
 
         if (isset($_PUT['temperature']) && isset($_PUT['humidity'])) {
             try {

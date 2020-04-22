@@ -1,5 +1,10 @@
 <template>
   <div class="home">
+    <div class="editbutton">
+      <router-link :to="'/edit/' + temp.last.id + '/' + temp.last.temperature + '/' + temp.last.humidity">
+        <img src="../assets/edit-solid.svg" alt="">
+      </router-link>
+    </div>
     <p class="date">{{ date }}</p>
     <div class="order">
       <div class="temp">
@@ -31,7 +36,6 @@ export default {
     loadTemp () {
       axios.get('https://temp.martitom.ch/api/measures').then(response => {
         this.temp = response.data;
-        console.log(this.temp);
       })
     },
     setDate () {
@@ -59,6 +63,24 @@ export default {
     text-align: left;
     margin: auto;
     padding-top: 20px;
+    .editbutton {
+      background-color:  #42b983;
+      position:absolute;
+      padding: 17px 17px 15px 20px;
+      border-radius: 100%;
+      bottom: 30px;
+      right: 30px;
+      z-index: 100;
+      a {
+        img {
+          width: 30px;
+          height: 30px;
+        }
+      }
+    }
+    .editbutton:hover {
+      background-color: rgba(66, 185, 131, 0.58);
+    }
     p {
       font-family: roboto, sans-serif;
       font-size: 18px;
