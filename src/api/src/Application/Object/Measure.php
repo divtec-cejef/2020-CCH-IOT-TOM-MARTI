@@ -225,7 +225,7 @@ class Measure
         }
         $response->getBody()->write(json_encode(["error" => [
             "code" => 412,
-            "Message" => "You dont have valid dates"
+            "Message" => "You dont have valid data"
         ]]));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(412);
     }
